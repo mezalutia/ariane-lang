@@ -1,0 +1,10 @@
+<program> ::= { <vardecl> } EOF
+<vardecl> ::= "let" <identifier> ":" <type> "=" <expr> ";"
+<expr> ::= <int_literal>
+<type> ::= "int"
+
+<int_literal> ::= <digit> { <digit> }
+
+<identifier> ::= <letter> { <letter> | <digit> }
+<letter> ::= "a" | ... | "z" | "A" | ... | "Z" | "_"
+<digit> ::= "0" | ... | "9" 
