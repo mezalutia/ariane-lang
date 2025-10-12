@@ -1,38 +1,65 @@
-use std::fs;
+use std::fs::File;
+use std::io::BufReader;
+use utf8_chars::BufReadCharsExt;
 
+#[derive(Debug)]
 pub enum Type {
-    Int
+    Int,
 }
 
 pub enum Token {
     Let,
     Identifier(String),
+    Colon,
     Type(Type),
+    Assignment,
     NumberLiteral(u64),
+    Semicolon,
+    EOF,
+    Unknown,
 }
 
 pub struct Lexer {
-    pub file_to_lex: String
+    pub file_to_lex: String,
 }
 
 impl Lexer {
     pub fn lex(&self) -> Vec<Token> {
-        let contents  = fs::read_to_string(&self.file_to_lex).expect("File does not exist!");
-        let mut tokens: Vec<String> = Vec::new();
-        let mut curr_token = String::new();
-        for char in contents.chars() {
-            match char {
-                ' ' | ';' => {
-                    tokens.push(curr_token.clone());
-                    curr_token.clear();
-                },
-                'a'..='z' => curr_token.push(char),
-                '0'..='9' => curr_token.push(char),
-                _ => ()
-
+        let file = File::open(&self.file_to_lex).expect("File cannot be found!");
+        let mut reader = BufReader::new(file);
+        let mut chars = reader.chars().peekable();
+        let mut str_buffer = String::new();
+        let mut tokens_list: Vec<Token> = Vec::new();
+        let mut curr_char_option = chars.next();
+        while let Some(Ok(curr_char)) = curr_char_option {
+            match curr_char {
+                'a'..='z' | 'A'..='Z' | '0'..='9' => {
+                    str_buffer.push(curr_char);
+                    if let Some(Ok(next_char)) = chars.peek() && !next_char.is_alphanumeric() {
+                        tokens_list.push(Lexer::determine_token(&str_buffer));
+                        str_buffer.clear();
+                    }
+                }
+                '=' => tokens_list.push(Token::Assignment),
+                ';' => tokens_list.push(Token::Semicolon),
+                ':' => tokens_list.push(Token::Colon),
+                ' ' | '\n' => (),
+                _ => tokens_list.push(Token::Unknown),
             }
+            curr_char_option = chars.next();
         }
-        tokens.iter().map(Lexer::determine_token_from_string).collect()
+        tokens_list.push(Token::EOF);
+        tokens_list
+    }
+    fn determine_token(id: &String) -> Token {
+        match id.as_str() {
+            "let" => Token::Let,
+            "int" => Token::Type(Type::Int),
+            num_lit if Lexer::only_digits(num_lit) => {
+                Token::NumberLiteral(num_lit.parse::<u64>().unwrap())
+            }
+            id => Token::Identifier(String::from(id)),
+        }
     }
     fn only_digits(str: &str) -> bool {
         if str.is_empty() {
@@ -45,13 +72,4 @@ impl Lexer {
         }
         true
     }
-    fn determine_token_from_string(str: &String) -> Token {
-        match str.as_str() {
-            "let" => Token::Let,
-            "int" => Token::Type(Type::Int),
-            num_lit if Lexer::only_digits(num_lit) => Token::NumberLiteral(num_lit.parse::<u64>().unwrap()),
-            id => Token::Identifier(String::from(id)),
-        }
-    }
 }
-

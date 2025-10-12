@@ -1,2 +1,2 @@
-let n: int = 0;
-let m: int = 100;
+let number: int = 0;
+let mumber: int = 100;
