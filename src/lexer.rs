@@ -55,21 +55,10 @@ impl Lexer {
         match id.as_str() {
             "let" => Token::Let,
             "int" => Token::Type(Type::Int),
-            num_lit if Lexer::only_digits(num_lit) => {
+            num_lit if num_lit.parse::<u64>().is_ok() => {
                 Token::NumberLiteral(num_lit.parse::<u64>().unwrap())
             }
             id => Token::Identifier(String::from(id)),
         }
-    }
-    fn only_digits(str: &str) -> bool {
-        if str.is_empty() {
-            return false;
-        }
-        for char in str.chars() {
-            if !char.is_ascii_digit() {
-                return false;
-            }
-        }
-        true
     }
 }
