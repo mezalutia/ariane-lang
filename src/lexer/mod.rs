@@ -38,7 +38,7 @@ impl Lexer {
         let mut curr_char_option = chars.next();
         while let Some(Ok(curr_char)) = curr_char_option {
             match curr_char {
-                'a'..='z' | 'A'..='Z' | '0'..='9' => {
+                'a'..='z' | 'A'..='Z' | '0'..='9' | '_' => {
                     str_buffer.push(curr_char);
                     if let Some(Ok(next_char)) = chars.peek() && !next_char.is_alphanumeric() {
                         tokens.push(Lexer::determine_token(&str_buffer));
