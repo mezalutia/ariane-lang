@@ -1,4 +1,5 @@
 mod lexer;
+mod parser;
 
 fn main() {
     let args: Vec<String> = std::env::args().collect();
@@ -9,7 +10,7 @@ fn main() {
     let tokens = lexer.lex();
     for token in tokens.iter() {
         match token {
-            lexer::Token::Let => print!("[let]"),
+            lexer::Token::Keyword(keyword) => print!("{:?}", keyword),
             lexer::Token::Identifier(name) => print!("[{name}]"),
             lexer::Token::Colon => print!(":"),
             lexer::Token::Type(type_name) => print!("{:?}", type_name),
@@ -20,3 +21,5 @@ fn main() {
         }
     }
 }
+
+

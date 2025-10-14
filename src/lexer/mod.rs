@@ -56,7 +56,7 @@ impl Lexer {
         tokens.push(Token::EOF);
         tokens
     }
-    fn determine_token(id: &String) -> Token {
+    fn determine_token(id: &str) -> Token {
         match id.as_str() {
             "let" => Token::Keyword(Keyword::Let),
             "int" => Token::Type(Type::Int),
