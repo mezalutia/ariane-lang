@@ -57,12 +57,10 @@ impl Lexer {
         tokens
     }
     fn determine_token(id: &str) -> Token {
-        match id.as_str() {
+        match id {
             "let" => Token::Keyword(Keyword::Let),
             "int" => Token::Type(Type::Int),
-            num_lit if num_lit.parse::<u64>().is_ok() => {
-                Token::NumberLiteral(num_lit.parse::<u64>().unwrap())
-            }
+            num_lit if num_lit.parse::<u64>().is_ok() => Token::NumberLiteral(num_lit.parse::<u64>().unwrap()),
             id => Token::Identifier(String::from(id)),
         }
     }
