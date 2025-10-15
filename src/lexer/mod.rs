@@ -2,8 +2,8 @@ use std::fs::File;
 use std::io::BufReader;
 use utf8_chars::BufReadCharsExt;
 
-#[derive(Debug)]
-pub enum Type {
+#[derive(Debug, Copy, Clone)]
+pub enum ArianeType {
     Int,
 }
 
@@ -16,7 +16,7 @@ pub enum Token {
     Keyword(Keyword),
     Identifier(String),
     Colon,
-    Type(Type),
+    Type(ArianeType),
     Assignment,
     NumberLiteral(u64),
     Semicolon,
@@ -40,7 +40,9 @@ impl Lexer {
             match curr_char {
                 'a'..='z' | 'A'..='Z' | '0'..='9' | '_' => {
                     str_buffer.push(curr_char);
-                    if let Some(Ok(next_char)) = chars.peek() && !next_char.is_alphanumeric() {
+                    if let Some(Ok(next_char)) = chars.peek()
+                        && !next_char.is_alphanumeric()
+                    {
                         tokens.push(Lexer::determine_token(&str_buffer));
                         str_buffer.clear();
                     }
@@ -59,8 +61,10 @@ impl Lexer {
     fn determine_token(id: &str) -> Token {
         match id {
             "let" => Token::Keyword(Keyword::Let),
-            "int" => Token::Type(Type::Int),
-            num_lit if num_lit.parse::<u64>().is_ok() => Token::NumberLiteral(num_lit.parse::<u64>().unwrap()),
+            "int" => Token::Type(ArianeType::Int),
+            num_lit if num_lit.parse::<u64>().is_ok() => {
+                Token::NumberLiteral(num_lit.parse::<u64>().unwrap())
+            }
             id => Token::Identifier(String::from(id)),
         }
     }
