@@ -3,5 +3,10 @@ name = "arianec"
 version = "0.1.0"
 edition = "2024"
 
+[[bin]]
+name = "arianec"
+path = "src/main.rs"
+
 [dependencies]
 utf8-chars = "3.0.5"
+
