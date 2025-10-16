@@ -19,7 +19,7 @@ pub struct ParseNode {
 }
 
 pub struct Parser {
-    tokens: Vec<Token>
+    pub tokens: Vec<Token>
 }
 
 impl Parser {
@@ -33,7 +33,7 @@ impl Parser {
         while let Some(curr_token) = token_option {
             match curr_token {
                 Token::Keyword(keyword) => match keyword {
-                    Keyword::Let => root.children.push(Parser::parse_var_decl(tokens)),
+                    Keyword::Let => root.children.push(ParseNode {value: Parser::parse_var_decl(tokens), children: Vec::new()}),
                 },
                 _ => todo!(),
             }
@@ -41,7 +41,7 @@ impl Parser {
         }
         root
     }
-    fn parse_var_decl<'a, I: Iterator<Item = &'a Token>>(tokens: &mut Peekable<I>) -> ParseNode {
+    fn parse_var_decl<'a, I: Iterator<Item = &'a Token>>(tokens: &mut Peekable<I>) -> Expression {
         let Some(Token::Identifier(id_name)) = tokens.next() else {panic!("Expected identifier name.")};
         match tokens.next() {
             Some(Token::Colon) => (),
@@ -53,15 +53,15 @@ impl Parser {
             _ => panic!("Expected assignment.")
         }
         let Some(Token::NumberLiteral(n)) = tokens.next() else {panic!("Expected number literal, for now.")};
+        match tokens.next() {
+            Some(Token::Semicolon) => (),
+            _ => panic!("Expected semicolon.")
+        }
         let expr = Box::new(Expression::Term(Term::Number(*n)));
-        let var_decl = Expression::VariableDeclaration(
+        Expression::VariableDeclaration(
             id_name.to_owned(), 
             ariane_type.to_owned(),
             expr
-        );
-        ParseNode {
-            value: var_decl,
-            children: Vec::new(),
-        }
+        )
     }
 }
