@@ -1,7 +1,6 @@
-[package]
-name = "arianec"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-utf8-chars = "3.0.5"
+[workspace]
+members = [
+    "arianec",
+    "arianevm",
+    "magpie",
+]
