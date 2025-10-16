@@ -1,2 +1,3 @@
 let number: int = 0;
 let mumber: int = 100;
+let error = 4;
