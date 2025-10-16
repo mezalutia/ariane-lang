@@ -12,6 +12,7 @@ pub enum Keyword {
     Let,
 }
 
+#[derive(Debug)]
 pub enum Token {
     Keyword(Keyword),
     Identifier(String),
