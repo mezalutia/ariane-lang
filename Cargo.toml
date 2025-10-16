@@ -1,0 +1,6 @@
+[workspace]
+members = [
+    "arianec",
+    "arianevm",
+    "magpie",
+]
