@@ -7,8 +7,8 @@ pub enum Term {
 }
 
 pub enum Expression {
-    Term(Term),
     Program,
+    Term(Term),
     Plus(Term, Term),
     VariableDeclaration(String, ArianeType, Box<Expression>)
 }
